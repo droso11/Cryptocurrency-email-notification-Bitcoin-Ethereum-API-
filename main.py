@@ -22,6 +22,11 @@ last_time_send_mail=datetime.datetime.now()
 last_send_bitcoin_list=get_bitcoin_list()
 last_send_ethereum_list=get_ethereum_list()
 
+send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
+                       ' '.join(['[BTC-ETH] Initialize']),
+                       'Author: Hubert Drozdowski\nPowered by\nhttps://bitbay.net/'
+                       )
+
 time.sleep(300)
 
 while True:
@@ -31,8 +36,8 @@ while True:
     timenow = datetime.datetime.now()
 
     try:
-        bitcoin_list = get_bitcoin_list()
-        ethereum_list = get_ethereum_list()
+        bitcoin_list = get_bitcoin_list()       # Can be ValueError exception
+        ethereum_list = get_ethereum_list()     # Can be ValueError exception
 
         percent_bitcoin = ((bitcoin_list[1]-last_send_bitcoin_list[1])/last_send_bitcoin_list[1])\
                           *100.0
