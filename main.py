@@ -56,7 +56,7 @@ while True:
     # BTC
     BODY += 'Bitcoin price: {0} USD [{1:.2f} %]\n'.format(bitcoin_list[1], percent_bitcoin)
 
-    if abs(percent_bitcoin) >= 11.11:
+    if abs(percent_bitcoin) >= 8:
         TITLE += '[BTC: {0:.2f}%]'.format(percent_bitcoin)
 
     if last_send_bitcoin_list[0] > bitcoin_list[1]:
@@ -71,7 +71,7 @@ while True:
     # ETH
     BODY += '\n\nEthereum price: {0} USD [{1:.2f} %]\n'.format(ethereum_list[1], percent_ethereum)
 
-    if abs(percent_ethereum) >= 11.11:
+    if abs(percent_ethereum) >= 8:
         TITLE += '[ETH: {0:.2f}%]'.format(percent_ethereum)
 
     if last_send_ethereum_list[0] > ethereum_list[1]:
@@ -100,7 +100,7 @@ while True:
         last_time_send_mail = timenow
 
     else:
-        if (timenow-last_time_send_mail).seconds//60 >= 60:
+        if (timenow-last_time_send_mail).seconds//60 >= 180:
             TITLE += '[BTC: {0:.2f}%]'.format(percent_bitcoin)
             TITLE += '[ETH: {0:.2f}%]'.format(percent_ethereum)
 
