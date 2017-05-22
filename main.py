@@ -22,7 +22,6 @@ last_time_send_mail=datetime.datetime.now()
 last_send_bitcoin_list=get_bitcoin_list()
 last_send_ethereum_list=get_ethereum_list()
 
-time.sleep(300)
 
 while True:
     TITLE = ''
@@ -100,7 +99,7 @@ while True:
         last_time_send_mail = timenow
 
     else:
-        if (timenow-last_time_send_mail).seconds//60 >= 180:
+        if (timenow-last_time_send_mail).seconds//60 <= 180:
             TITLE += '[BTC: {0:.2f}%]'.format(percent_bitcoin)
             TITLE += '[ETH: {0:.2f}%]'.format(percent_ethereum)
 
@@ -110,7 +109,6 @@ while True:
                        )
 
             last_time_send_mail = timenow
-
 
 
     time.sleep(600)
