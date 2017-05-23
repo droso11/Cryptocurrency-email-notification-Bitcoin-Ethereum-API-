@@ -20,7 +20,7 @@ class Currency(object):
         self._new_min = self.min
         self._new_max = self.max
 
-        self.min_update_time = min(10, min_update_time)         # please do not update faster.
+        self.min_update_time = max(10, min_update_time)         # please do not update faster.
         self.last_update = datetime.datetime.now()
 
     def get_current_update_percent(self):
@@ -40,7 +40,7 @@ class Currency(object):
                 str(self.last_update.replace(microsecond=0)), str(datetime.datetime.now().replace(microsecond=0))
             ),
 
-            '{0} price: {1} USD [{2:+.2f} %]'.format(self.long_name, self.current, self.percent)
+            '{0} price: {1} PLN [{2:+.2f} %]'.format(self.long_name, self.current, self.percent)
         ]
 
         if abs(self.percent) >= self.min_percent:
