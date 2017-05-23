@@ -22,16 +22,11 @@ last_time_send_mail=datetime.datetime.now()
 last_send_bitcoin_list=get_bitcoin_list()
 last_send_ethereum_list=get_ethereum_list()
 
-send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
-                       ' '.join(['[BTC-ETH] Initialize']),
-                       'Author: Hubert Drozdowski\nPowered by\nhttps://bitbay.net/'
-                       )
-
-time.sleep(300)
+sleep(300)
 
 while True:
-    TITLE = ''
-    BODY = ''''''
+    title = []
+    body = []
 
     timenow = datetime.datetime.now()
 
@@ -46,9 +41,9 @@ while True:
                            *100.0
 
     except (TypeError, ValueError):
-        if (timenow-last_time_send_mail).seconds//60 >= 90:
+        if (timenow-last_time_send_mail).seconds//60 >= 111:
             send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
-                       ' '.join([TITLE, '[BTC-ETH] [ERROR] TypeError/ValueError']),
+                       ' '.join([title, '[BTC-ETH] [ERROR] TypeError/ValueError']),
                        'Problem with bitbay.net\nhttps://bitbay.net/'
                        )
             last_time_send_mail = time
@@ -58,64 +53,77 @@ while True:
         time.sleep(300)
         continue
 
+
+
+    body.append('From {} to {}'.format(str(last_time_send_mail.replace(microsecond=0)), str(timenow.replace(microsecond=0))))
+
     # BTC
-    BODY += 'Bitcoin price: {0} USD [{1:.2f} %]\n'.format(bitcoin_list[1], percent_bitcoin)
+    body.append('Bitcoin price: {0} USD [{1:+.2f} %]'.format(bitcoin_list[1], percent_bitcoin))
+
+    BTC = False
 
     if abs(percent_bitcoin) >= 8:
-        TITLE += '[BTC: {0:.2f}%]'.format(percent_bitcoin)
+        title.apend('BTC: {0:+.2f}%'.format(percent_bitcoin))
+        BTC = True
 
     if last_send_bitcoin_list[0] > bitcoin_list[1]:
-        TITLE += '[BTC hit lowest 24h]'
-        BODY += 'Bitcoin hit the lowest value in 24h\n'
+        title.append('BTC hit lowest 24h')
+        body.append('Bitcoin hit the lowest value in 24h')
+        BTC = True
 
     elif last_send_bitcoin_list[2] < bitcoin_list[1]:
-        TITLE += '[BTC hit highest 24h]'
-        BODY += 'Bitcoin hit the highest value in 24h\n'
-
+        title.append('BTC hit highest 24h')
+        body.append('Bitcoin hit the highest value in 24h')
+        BTC = True
 
     # ETH
-    BODY += '\n\nEthereum price: {0} USD [{1:.2f} %]\n'.format(ethereum_list[1], percent_ethereum)
+    body.append('\nEthereum price: {0} USD [{1:+.2f} %]'.format(ethereum_list[1], percent_ethereum))
+
+    ETH = False
 
     if abs(percent_ethereum) >= 8:
-        TITLE += '[ETH: {0:.2f}%]'.format(percent_ethereum)
+        title.append('ETH: {0:+.2f}%'.format(percent_ethereum))
+        ETH = True
 
     if last_send_ethereum_list[0] > ethereum_list[1]:
-        TITLE += '[ETH hit lowest 24h]'
-        BODY += 'Ethereum hit the lowest value in 24h\n'
+        title.append('ETH hit lowest 24h')
+        body.append('Ethereum hit the lowest value in 24h')
+        ETH = True
 
     elif last_send_ethereum_list[2] < ethereum_list[1]:
-        TITLE += '[ETH hit highest 24h]'
-        BODY += 'Ethereum hit the highest value in 24h\n'
+        title.append('ETH hit highest 24h')
+        body.append('Ethereum hit the highest value in 24h')
+        ETH = True
 
-    BODY += '\nhttps://bitbay.net/'
+    body.append('\nhttps://bitbay.net/')
 
-    if(len(TITLE)):
-        if 'BTC' in TITLE:
+    if len(title):
+        if BTC:
             last_send_bitcoin_list = bitcoin_list
 
-        if 'ETH' in TITLE:
+        if ETH:
             last_send_ethereum_list = ethereum_list
 
-
         send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
-                   TITLE,
-                   BODY
+                   ' '.join(title),
+                   '\n'.join(body)
                    )
 
         last_time_send_mail = timenow
 
     else:
-        if (timenow-last_time_send_mail).seconds//60 >= 180:
-            TITLE += '[BTC: {0:.2f}%]'.format(percent_bitcoin)
-            TITLE += '[ETH: {0:.2f}%]'.format(percent_ethereum)
+        if (timenow-last_time_send_mail).seconds//60 >= 240:
+            title.append('BTC: {0:+.2f}%'.format(percent_bitcoin))
+            title.append('ETH: {0:+.2f}%'.format(percent_ethereum))
 
             send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
-                       TITLE,
-                       BODY
+                       ' '.join(title),
+                       '\n'.join(body)
                        )
 
             last_time_send_mail = timenow
-
+            last_send_bitcoin_list = bitcoin_list
+            last_send_ethereum_list = ethereum_list
 
 
     time.sleep(600)

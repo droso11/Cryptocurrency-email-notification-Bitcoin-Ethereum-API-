@@ -25,3 +25,4 @@ def get_bitcoin_list():
     json_dictionary = get_json('https://bitbay.net/API/Public/BTCUSD/ticker.json')
 
     return [json_dictionary.get('min', None),json_dictionary.get('last', None),json_dictionary.get('max', None)]
+
