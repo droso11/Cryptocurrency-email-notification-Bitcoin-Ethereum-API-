@@ -1,10 +1,13 @@
 import datetime
 
 class Currency(object):
-    def __init__(self, long_name, short_name, percent, min_update_time, function):
-                # long_name - long name of currency.
-                # percent - minimum of % to update
-                # min_update_time = After this (in minutes) time if update doesn't occur, force update of (self.min, self.current, self.max, self.percent)
+    def __init__(self, long_name, short_name, currency_short, percent, min_update_time, function):
+                # long_name - long name of CRYPTOcurrency.
+                # short_name - CRYPTOcurrency
+                # currency_short - CURRENCY (USD/PLN etc)
+                # percent - minimum of % change in value to update
+                # min_update_time = After this (in minutes) time if update doesn't occur \
+                # \force update of (self.min, self.current, self.max, self.percent)
                 # function to get the list of [min of 24h, current, max of 24h] currency price
 
         self.long_name = long_name
@@ -22,6 +25,7 @@ class Currency(object):
 
         self.min_update_time = max(10, min_update_time)         # please do not update faster.
         self.last_update = datetime.datetime.now()
+        self.currency_short = currency_short
 
     def get_current_update_percent(self):
         self._new_min, self.current, self._new_max = self.function()
@@ -40,7 +44,9 @@ class Currency(object):
                 str(self.last_update.replace(microsecond=0)), str(datetime.datetime.now().replace(microsecond=0))
             ),
 
-            '{0} price: {1} PLN [{2:+.2f} %]'.format(self.long_name, self.current, self.percent)
+            '{0} price: {1} {2} [{3:+.2f} %]'.format(
+                self.long_name, self.current, self.currency_short, self.percent
+            )
         ]
 
         if abs(self.percent) >= self.min_percent:
