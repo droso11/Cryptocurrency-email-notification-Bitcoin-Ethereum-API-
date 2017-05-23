@@ -112,7 +112,7 @@ while True:
         last_time_send_mail = timenow
 
     else:
-        if (timenow-last_time_send_mail).seconds//60 >= 240:
+        if (timenow-last_time_send_mail).seconds//60 >= 180:
             title.append('BTC: {0:+.2f}%'.format(percent_bitcoin))
             title.append('ETH: {0:+.2f}%'.format(percent_ethereum))
 
