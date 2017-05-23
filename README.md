@@ -1,8 +1,10 @@
-# Cryptocurrency-email-notification Bitcoin-Ethereum API
+# Cryptocurrency email notification - Bitcoin/Ethereum API
 
 # About
 Get notification email about latest changes in price of Bitcoin/Ethereum/[INSERT YOUR CRYPTOCURRENCY].
+
 You can adjust the needed percent of change to send mail and force mail every X minutes (if nothing was sent)
+
 You will also get the email when cryptocurrency hits the lowest value of the day or the highest value of the day.
 
 # Configuration
