@@ -47,14 +47,14 @@ while True:
         temp_title, temp_body = currency.generate_mail_lists()
         title.extend(temp_title)
         body.extend(temp_body)
-        body.append('</br>\n')           # make line between currencies
+        body.append('<br/>\n')           # make line between currencies
 
     print(title,body)
 
     if len(title) > 0:
         send_email(SMTP_SERVER, PORT, LOGIN, PASSWORD, RECIPENTS,
                        ' '.join(title),
-                       '</br>\n'.join(body)
+                       '<br/>\n'.join(body)
                        )
 
     time.sleep(600)
