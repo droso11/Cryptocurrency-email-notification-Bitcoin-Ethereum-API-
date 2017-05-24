@@ -3,7 +3,6 @@ import time
 import config
 from mail import send_email
 
-
 time.sleep(300)
 
 while True:
