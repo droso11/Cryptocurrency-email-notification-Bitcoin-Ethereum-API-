@@ -11,6 +11,8 @@ PORT = 465
 LOGIN = 'USER@mail.com'
 PASSWORD = '****passwordhere****'
 
+
+
 RECIPENTS = [
     'MAIL_TO@gmail.com'
 ]
