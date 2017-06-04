@@ -20,19 +20,24 @@ class Currency(object):
         self.percent = 0.0
         self.min_percent = percent
 
-        self._new_min = self.min
-        self._new_max = self.max
+        self._min = self.min
+        self._max = self.max
 
         self.min_update_time = max(10, min_update_time)         # please do not update faster.
         self.last_update = datetime.datetime.now()
         self.currency_short = currency_short
 
     def get_current_update_percent(self):
-        self._new_min, self.current, self._new_max = self.function()
-        self.percent = ((self.current - self.last) / self.last) * 100.0
+        self._min, self.current, self._max = self.function()
+        self.percent = self.get_percent(self.last, self.current)
+
+
 
     def __str__(self):
-        return '{0}: {1:+.2f}%'.format(self.short_name, self.percent)
+        return '{0}: {1}{2} ({3:+.2f}%)'.format(self.short_name, self.current, self.currency_short, self.percent)
+
+    def get_percent(self, old, new):
+        return ((new-old)/old) * 100.0
 
     def generate_title_body_list(self):
         title_list = []
@@ -52,19 +57,20 @@ class Currency(object):
         if abs(self.percent) >= self.min_percent:
             title_list.append(self.__str__())
 
-        if self.min > self.current:
-            title_list.append('{} hit lowest 24h'.format(self.short_name))
-            body_list.append('{} hit the lowest value in 24h'.format(self.long_name))
+        if self.get_percent(self.last, self.current) >= 1:
+            if self.min > self.current:
+                title_list.append('{} hit lowest 24h'.format(self.short_name))
+                body_list.append('{} hit the lowest value in 24h'.format(self.long_name))
 
-        elif self.max < self.current:
-            title_list.append('{} hit highest 24h'.format(self.short_name))
-            body_list.append('{} hit the highest value in 24h'.format(self.long_name))
+            elif self.max < self.current:
+                title_list.append('{} hit highest 24h'.format(self.short_name))
+                body_list.append('{} hit the highest value in 24h'.format(self.long_name))
 
         return title_list, body_list
 
     def update(self):
-        self.min = self._new_min
-        self.max = self._new_max
+        self.min, self._min = self._min, self.min
+        self.max, self._max = self._max, self.max
         self.last = self.current
         self.last_update = datetime.datetime.now()
 
@@ -75,7 +81,11 @@ class Currency(object):
 
         if len(title):
             self.update()
-        elif (datetime.datetime.now()-self.last_update).seconds//60 >= self.min_update_time:
+
+        elif self.min_update_time > 0 \
+            and (datetime.datetime.now()-self.last_update).seconds//60 >= self.min_update_time \
+            and self.get_percent(self.last, self.current) >= 1:
+
             title.append(self.__str__())
             self.update()
 
