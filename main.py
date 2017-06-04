@@ -5,7 +5,7 @@ import threading
 import config
 from mail import send_email
 
-time.sleep(5)
+time.sleep(300)
 errors = 0
 exitFlag = 0
 
@@ -64,7 +64,7 @@ def check_cryptocurrency(currency, lock):
         finally:
             lock.release()      # LOCK RELEASE
 
-        time.sleep(30)
+        time.sleep(600)
 
 
 for currency in config.currencies:
