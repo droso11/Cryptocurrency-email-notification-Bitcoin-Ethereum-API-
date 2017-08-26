@@ -1,5 +1,10 @@
 import datetime
 
+
+class DowntimeException(Exception):
+    pass
+
+
 class Currency(object):
     def __init__(self, long_name, short_name, currency_short, percent, min_update_time, function):
                 # long_name - long name of CRYPTOcurrency.
@@ -28,16 +33,19 @@ class Currency(object):
         self.currency_short = currency_short
 
     def get_current_update_percent(self):
-        self._min, self.current, self._max = self.function()
+        _min, current, _max = self.function()
+
+        if current == 0:
+            raise DowntimeException
+
+        self._min, self.current, self._max = _min, current, _max
         self.percent = self.get_percent(self.last, self.current)
-
-
 
     def __str__(self):
         return '{0}: {1}{2} ({3:+.2f}%)'.format(self.short_name, self.current, self.currency_short, self.percent)
 
     def get_percent(self, old, new):
-        return ((new-old)/old) * 100.0
+        return ((new-old)/max(1, old)) * 100.0
 
     def generate_title_body_list(self):
         title_list = []
@@ -82,9 +90,8 @@ class Currency(object):
         if len(title):
             self.update()
 
-        elif self.min_update_time > 0 \
-            and (datetime.datetime.now()-self.last_update).seconds//60 >= self.min_update_time \
-            and self.get_percent(self.last, self.current) >= 1:
+        elif (datetime.datetime.now()-self.last_update).seconds//60 >= self.min_update_time > 0 \
+                and self.get_percent(self.last, self.current) >= 1:
 
             title.append(self.__str__())
             self.update()
